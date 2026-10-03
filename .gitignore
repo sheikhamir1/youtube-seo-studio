@@ -32,3 +32,7 @@ data/
 .idea/
 .vscode/
 
+# Developer-only local notes — intentionally ignored because this file is personal
+# workflow cheat sheet and should never be pushed to GitHub
+GITHUB_COMMANDS.md
+
