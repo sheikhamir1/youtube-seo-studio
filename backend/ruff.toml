@@ -1,0 +1,33 @@
+# Ruff configuration: linting + formatting for the backend.
+line-length = 110
+target-version = "py311"
+
+exclude = [".venv", "__pycache__", "alembic/versions"]
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # import sorting
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "C4",  # comprehensions
+    "SIM", # simplify
+    "ARG", # unused arguments
+    "PTH", # pathlib
+    "RUF",
+]
+ignore = [
+    "E501",   # long lines are handled by the formatter
+    "B008",   # FastAPI Depends() in defaults is idiomatic
+    "SIM108", # ternaries are not always clearer
+    "RUF012", # mutable class attributes in tests are intentional
+    "ARG001", # unused arguments happen in protocol implementations and callbacks
+    "ARG002",
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

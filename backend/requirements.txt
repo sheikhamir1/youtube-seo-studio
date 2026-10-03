@@ -1,0 +1,29 @@
+# Core web framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# Configuration / validation
+pydantic==2.10.5
+pydantic-settings==2.7.1
+
+# Database
+SQLAlchemy==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+greenlet==3.1.1
+
+# Media processing
+ffmpeg-python==0.2.0
+
+# AI provider (official Google Gemini SDK)
+google-genai==1.75.0
+
+# Prompt rendering (sandboxed Jinja2)
+Jinja2==3.1.5
+
+# Timeline deduplication
+rapidfuzz==3.11.0
+
+# HTTP client (tests + internal calls)
+httpx==0.28.1

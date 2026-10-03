@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Theme tokens. Dark is the default; `:root` holds the light palette.
+--------------------------------------------------------------------------- */
+:root {
+  --color-bg: 246 247 249;
+  --color-surface: 255 255 255;
+  --color-surface-2: 241 243 246;
+  --color-border: 214 219 226;
+  --color-text: 22 26 33;
+  --color-muted: 104 113 128;
+  --color-accent: 79 70 229;
+  --color-accent-soft: 226 226 252;
+  --color-accent-fg: 255 255 255;
+  --color-success: 21 128 61;
+  --color-warning: 180 83 9;
+  --color-danger: 190 18 60;
+}
+
+.dark {
+  --color-bg: 13 15 20;
+  --color-surface: 20 23 30;
+  --color-surface-2: 27 31 40;
+  --color-border: 46 52 64;
+  --color-text: 232 236 243;
+  --color-muted: 148 158 174;
+  --color-accent: 129 140 248;
+  --color-accent-soft: 39 44 70;
+  --color-accent-fg: 17 19 26;
+  --color-success: 74 222 128;
+  --color-warning: 251 191 36;
+  --color-danger: 248 113 113;
+}
+
+@layer base {
+  html {
+    @apply h-full;
+  }
+
+  body {
+    @apply min-h-full bg-bg font-sans text-[15px] leading-relaxed text-content antialiased;
+  }
+
+  /* Visible, consistent focus states for keyboard navigation. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+
+  h1 {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  h2 {
+    @apply text-base font-semibold tracking-tight;
+  }
+  h3 {
+    @apply text-sm font-semibold uppercase tracking-wide text-muted;
+  }
+
+  ::selection {
+    @apply bg-accent/30;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-lg border border-border bg-surface shadow-card;
+  }
+
+  .card-pad {
+    @apply p-4 sm:p-5;
+  }
+
+  .input-base {
+    @apply w-full rounded-md border border-border bg-surface-2 px-3 py-2 text-sm text-content
+           placeholder:text-muted/70 focus:border-accent focus:bg-surface focus:outline-none;
+  }
+
+  .mono {
+    @apply font-mono text-[13px] tabular-nums;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-border)) transparent;
+  }
+}
+
+/* Reduced-motion users get no decorative animation. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,101 @@
+# YouTube SEO Studio - local production-style stack.
+# Exactly three services: postgres, backend, frontend.
+# The backend process contains the persistent worker subsystem (no separate
+# worker container, no Redis, no Celery).
+name: youtube-seo-studio
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: yss-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-youtube_seo_studio}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      # Bound to localhost only: this is a single-user local application.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./postgres_data/DATA:/var/lib/postgresql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-youtube_seo_studio}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: yss-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: ${APP_ENV:-production-local}
+      # Inside the container PostgreSQL is reachable as "postgres", not localhost.
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-youtube_seo_studio}
+      DATA_DIR: /app/data
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
+      GEMINI_ALLOWED_MODELS: ${GEMINI_ALLOWED_MODELS:-gemini-3.5-flash,gemini-3.8-flash}
+      GEMINI_RPM_LIMIT: ${GEMINI_RPM_LIMIT:-15}
+      GEMINI_TPM_LIMIT: ${GEMINI_TPM_LIMIT:-250000}
+      GEMINI_RPD_LIMIT: ${GEMINI_RPD_LIMIT:-500}
+      GEMINI_MIN_INTERVAL_SECONDS: ${GEMINI_MIN_INTERVAL_SECONDS:-60}
+      AUDIO_TOKENS_PER_SECOND: ${AUDIO_TOKENS_PER_SECOND:-32}
+      CHUNK_DURATION_SECONDS: ${CHUNK_DURATION_SECONDS:-3600}
+      CHUNK_OVERLAP_SECONDS: ${CHUNK_OVERLAP_SECONDS:-60}
+      MAP_MAX_TOPICS_PER_CHUNK: ${MAP_MAX_TOPICS_PER_CHUNK:-20}
+      MAX_GEMINI_RETRIES: ${MAX_GEMINI_RETRIES:-8}
+      MAX_SCHEMA_REPAIR_ATTEMPTS: ${MAX_SCHEMA_REPAIR_ATTEMPTS:-2}
+      AI_PROVIDER: ${AI_PROVIDER:-gemini}
+      WORKER_STALE_SECONDS: ${WORKER_STALE_SECONDS:-120}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # CORS stays same-origin in production: the browser only talks to Nginx.
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    volumes:
+      # All persistent media/data remains on the host machine.
+      - ./data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen(''http://127.0.0.1:8000/api/v1/health'', timeout=3).status == 200 else 1)"',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: yss-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      # Exposed on 127.0.0.1 only (see spec: no authentication system).
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+volumes:
+  postgres_data:
+    driver: local
