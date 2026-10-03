@@ -14,8 +14,10 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProcessingPage from './pages/ProcessingPage';
 import PromptTemplateEditorPage from './pages/PromptTemplateEditorPage';
 import PromptTemplatesPage from './pages/PromptTemplatesPage';
+import PublishPage from './pages/PublishPage';
 import SettingsPage from './pages/SettingsPage';
 import TimelinePage from './pages/TimelinePage';
+import VideoSelectPage from './pages/VideoSelectPage';
 import { queryClient } from './queries/queryClient';
 import { useThemeStore } from './stores/themeStore';
 
@@ -55,6 +57,22 @@ export function AppRoutes() {
         <Route path="/prompt-templates/new" element={<PromptTemplateEditorPage />} />
         <Route path="/prompt-templates/:templateId" element={<PromptTemplateEditorPage />} />
         <Route path={ROUTES.settings} element={<SettingsPage />} />
+        <Route
+          path={ROUTES.publishYouTube(':jobId')}
+          element={
+            <RequireJob>
+              <PublishPage />
+            </RequireJob>
+          }
+        />
+        <Route
+          path={ROUTES.publishYouTubeVideos(':jobId')}
+          element={
+            <RequireJob>
+              <VideoSelectPage />
+            </RequireJob>
+          }
+        />
         <Route path="/dashboard" element={<Navigate to={ROUTES.dashboard} replace />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

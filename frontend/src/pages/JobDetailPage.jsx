@@ -1,4 +1,4 @@
-import { Download, LineChart, Loader2, Wand2 } from 'lucide-react';
+import { Download, LineChart, Loader2, Upload, Wand2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -263,6 +263,23 @@ export function JobDetailPage() {
                 >
                   Regenerate SEO
                 </Button>
+              </CardBody>
+            </Card>
+          )}
+
+          {currentResult && (
+            <Card>
+              <CardHeader
+                icon={Upload}
+                title="Publish to YouTube"
+                description="Send this SEO metadata to a YouTube video."
+              />
+              <CardBody>
+                <Link to={`${ROUTES.publishYouTube(jobId)}?title=${encodeURIComponent(currentResult.title)}&description=${encodeURIComponent(currentResult.description)}&tags=${encodeURIComponent((currentResult.tags || []).join(','))}`}>
+                  <Button variant="primary" icon={Upload}>
+                    Open YouTube Publisher
+                  </Button>
+                </Link>
               </CardBody>
             </Card>
           )}

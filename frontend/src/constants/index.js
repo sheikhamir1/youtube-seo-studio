@@ -10,6 +10,8 @@ export const ROUTES = {
   processing: (jobId) => `/processing/${jobId}`,
   history: '/history',
   job: (jobId) => `/jobs/${jobId}`,
+  publishYouTube: (jobId) => `/jobs/${jobId}/publish-youtube`,
+  publishYouTubeVideos: (jobId) => `/jobs/${jobId}/publish-youtube/videos`,
   timeline: (jobId) => `/jobs/${jobId}/timeline`,
   promptTemplates: '/prompt-templates',
   newPromptTemplate: '/prompt-templates/new',

@@ -27,3 +27,8 @@ rapidfuzz==3.11.0
 
 # HTTP client (tests + internal calls)
 httpx==0.28.1
+
+# YouTube publisher (Phase 2)
+google-auth>=2.48.1
+google-auth-oauthlib==1.2.1
+google-api-python-client==2.149.0

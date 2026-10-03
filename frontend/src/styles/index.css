@@ -98,3 +98,13 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+input.w-full.rounded-md.border.border-border.px-3.py-2.text-sm.focus\:border-blue-500.focus\:outline-none {
+  background-color: white !important;
+}
+textarea.w-full.rounded-md.border.border-border.px-3.py-2.text-sm.focus\:border-blue-500.focus\:outline-none {
+  background-color: white !important;
+}
+select.w-full.rounded-md.border.border-border.px-3.py-2.text-sm.focus\:border-blue-500.focus\:outline-none {
+  background-color: white !important;
+}

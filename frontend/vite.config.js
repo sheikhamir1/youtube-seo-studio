@@ -17,7 +17,6 @@ export default defineConfig({
       '/api': {
         target: process.env.VITE_DEV_BACKEND_URL || 'http://127.0.0.1:8000',
         changeOrigin: true,
-        // Server-Sent Events must not be buffered.
         configure: (proxy) => {
           proxy.on('proxyRes', (proxyRes) => {
             if (proxyRes.headers['content-type']?.includes('text/event-stream')) {
@@ -25,6 +24,10 @@ export default defineConfig({
             }
           });
         },
+      },
+      '/youtube': {
+        target: process.env.VITE_DEV_BACKEND_URL || 'http://127.0.0.1:8000',
+        changeOrigin: true,
       },
     },
   },

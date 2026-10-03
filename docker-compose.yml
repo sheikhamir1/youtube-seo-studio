@@ -59,13 +59,16 @@ services:
       AI_PROVIDER: ${AI_PROVIDER:-gemini}
       WORKER_STALE_SECONDS: ${WORKER_STALE_SECONDS:-120}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      # CORS stays same-origin in production: the browser only talks to Nginx.
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      YOUTUBE_REDIRECT_URI: ${YOUTUBE_REDIRECT_URI:-http://localhost:8000/api/v1/youtube/auth/callback}
+      YOUTUBE_FRONTEND_URL: ${YOUTUBE_FRONTEND_URL:-http://localhost:8080}
+      YOUTUBE_CLIENT_SECRETS_PATH: /app/client_secrets.json
+      YOUTUBE_TOKEN_DIR: /app/data/youtube-tokens
     ports:
       - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:
-      # All persistent media/data remains on the host machine.
       - ./data:/app/data
+      - ./client_secrets.json:/app/client_secrets.json:ro
     healthcheck:
       test:
         [
